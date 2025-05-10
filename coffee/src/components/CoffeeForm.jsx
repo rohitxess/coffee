@@ -5,6 +5,15 @@ export default function CoffeeForm() {
     const [ selectedCoffee, setSelectedCoffee] = useState(null);
     const [ showCoffeeTypes, setShowCoffeeTypes ] = useState(false); // when the user clicks on the other button, we decide if we want to show other options or not!
     const [ coffeeCost, setCoffeeCost] = useState(0); 
+    const [ hour, setHour ] = useState(0);
+    const [ min, setMin ] = useState(0);
+
+    //handlesubmitform 
+    
+    function handleSubmitForm() {
+        console.log(selectedCoffee , coffeeCost, hour, min )
+    }
+    
     return (
         <>
             <div className="section-header">
@@ -56,7 +65,10 @@ export default function CoffeeForm() {
                 <div>
                     <div>
                         <h6>Hours</h6>
-                        <select name="" id="hours-select">
+                        <select name="" id="hours-select"
+                        onChange={(e) => {
+                            setHour(e.target.value)
+                        }}>
                             {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((hour, hourIndex) => {
                                 return (
                                     <option key={hourIndex} value={hour}>{hour}</option>
@@ -69,7 +81,9 @@ export default function CoffeeForm() {
                 <div>
                     <div>
                         <h6>Mins</h6>
-                        <select name="" id="hours-select">
+                        <select name="" id="hours-select"
+                        onChange={(e) => {
+                            setMin(e.target.value)}}>
                             {[0,5,10,15,30,25].map((min, minIndex) => {
                                 return (
                                     <option key={minIndex} value={min}>{min}</option>
@@ -78,6 +92,8 @@ export default function CoffeeForm() {
                         </select>
                     </div>
                 </div>
+
+                <button onClick={handleSubmitForm}>Add Entry</button>
         </>
     )
 }
