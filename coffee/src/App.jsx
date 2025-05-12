@@ -8,7 +8,7 @@ function App(){
   
   // it is a good practice to make a dummy data 
   
-  const isAuthenticated = true;
+  const isAuthenticated = false;
 
   // to ensure the functionalities are only available to users who have signed up
   // if the authentication is false do not show the stats and data 
@@ -19,11 +19,12 @@ function App(){
       <History />
     </>
   )
+// if the person is authenticated then show the full content, if not prompt the user to signup
 
   return (
     <Layout>
       <Hero />
-      <CoffeeForm />
+      <CoffeeForm isAuthenticated={isAuthenticated} />
       {isAuthenticated && (authenticatedContent)} 
     </Layout>
   )
