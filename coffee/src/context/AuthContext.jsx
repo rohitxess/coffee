@@ -39,8 +39,6 @@ export function AuthProvider(props) {
         return signOut(auth)
     }
 
-    
-
     // value holds the values of the state in an object 
     const value = { globalUser, globalData, setGlobalData, isLoading, signup, login, logout}
 
@@ -58,15 +56,15 @@ export function AuthProvider(props) {
             try {
 
                 // first we create a reference for the document (labelled json object, and then we get the doc, and then we snapshot it to see if there's anything there)
-
+                setIsLoading(true)
                 const docRef  = doc(db, 'users', user.uid)
                 const docSnap = await getDoc(docRef);
 
                 let firebaseData = {}
 
                 if(docSnap.exists()){
-                    console.log('Found user data')
                     firebaseData = docSnap.data()
+                    console.log('Found user data')
                 }
                 setGlobalData(firebaseData);
                 
@@ -75,9 +73,8 @@ export function AuthProvider(props) {
             } finally {
                 setIsLoading(false)
             }           
-            return unsubscribe
         })
-
+        return unsubscribe
     },[])
         
     return (
