@@ -18,11 +18,8 @@ export default function Layout(props) {
                 <p>For Coffee Insatiates</p>
             </div>
             { globalUser ? 
-             (<button onClick={(logout) => {
-                setShowModal(true)
-            }}>
+             (<button onClick={logout}>
                 <p>Logout</p>
-                <i className="fa-solid fa-mug-hot"></i>
             </button> ) : (  
             <button onClick={() => {
                 setShowModal(true)

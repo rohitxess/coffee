@@ -7,10 +7,11 @@ import { useAuth } from "./context/AuthContext";
 import { coffeeConsumptionHistory } from "./utils";
 
 function App(){
-  const { globalUser, globalData } = useAuth();
   
   // it is a good practice to make a dummy data 
-  
+
+  const { globalUser, isLoading, globalData } = useAuth();
+  // let globalData = coffeeConsumptionHistory; code to get the userhistory data 
   const isAuthenticated = globalUser;
   const isData = globalData && !!Object.keys(globalData || {}).length
 
@@ -30,6 +31,9 @@ function App(){
     <Layout>
       <Hero />
       <CoffeeForm isAuthenticated={isAuthenticated} />
+      {(isAuthenticated && isLoading) && (
+        <p>Loading Data...</p>
+      )}
       {(isAuthenticated && isData)&& (authenticatedContent)} 
     </Layout>
   )

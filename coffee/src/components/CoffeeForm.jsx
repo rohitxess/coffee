@@ -2,6 +2,7 @@ import { use, useState } from 'react';
 import { coffeeOptions} from '../utils';
 import Authentication from './Authentication';
 import Modal from './Modal';
+import { useAuth } from '../context/AuthContext';
 
 export default function CoffeeForm(props) {
     const { isAuthenticated }  = props;
@@ -12,6 +13,7 @@ export default function CoffeeForm(props) {
     const [ hour, setHour ] = useState(0);
     const [ min, setMin ] = useState(0);
 
+    const { globalData } = useAuth();
     //handlesubmitform 
     
     function handleSubmitForm() {
@@ -19,6 +21,24 @@ export default function CoffeeForm(props) {
             setShowModal(true)
             return 
         }
+        // define a guard clause that only submits the form if it is completed
+        if (!isAuthenticated) {
+            setShowModal(true)
+            return 
+        }
+        // then we're going to create a new data object 
+        const newGlobalData = { 
+            ...(globalData || {} )
+        }
+
+        const nowTime = Date.now()
+        const timeToSubtract =  (hour * 60 * 60 * 1000) + (min * 60 * 100)
+        const timestamp = nowTime - timeToSubtract
+        newGlobalData[timestamp] = {}
+
+        // update the global state 
+
+        // persista the data in the firebase firestore 
 
         console.log(selectedCoffee , coffeeCost, hour, min )
     }
