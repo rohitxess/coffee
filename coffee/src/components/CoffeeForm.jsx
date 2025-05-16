@@ -3,6 +3,8 @@ import { coffeeOptions} from '../utils';
 import Authentication from './Authentication';
 import Modal from './Modal';
 import { useAuth } from '../context/AuthContext';
+import { auth, db } from "../../firebase";
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function CoffeeForm(props) {
     const { isAuthenticated }  = props;
@@ -13,34 +15,56 @@ export default function CoffeeForm(props) {
     const [ hour, setHour ] = useState(0);
     const [ min, setMin ] = useState(0);
 
-    const { globalData } = useAuth();
+    const { globalData, setGlobalData, globalUser } = useAuth();
     //handlesubmitform 
     
-    function handleSubmitForm() {
+    async function handleSubmitForm() {
         if(!isAuthenticated){
             setShowModal(true)
             return 
         }
         // define a guard clause that only submits the form if it is completed
-        if (!isAuthenticated) {
-            setShowModal(true)
+        if (!selectedCoffee) {
             return 
         }
-        // then we're going to create a new data object 
-        const newGlobalData = { 
-            ...(globalData || {} )
+
+        try {
+                // then we're going to create a new data object 
+            const newGlobalData = { 
+                ...(globalData || {} )
+            }
+
+            const nowTime = Date.now()
+            const timeToSubtract =  (hour * 60 * 60 * 1000) + (min * 60 * 100)
+            const timestamp = nowTime - timeToSubtract
+
+            const newData = {
+                name: selectedCoffee,
+                cost: coffeeCost
+            }
+            newGlobalData[timestamp] = newData
+            console.log(timestamp,selectedCoffee , coffeeCost )
+
+            // update the global state 
+            setGlobalData(newGlobalData)
+
+            // persista the data in the firebase firestore 
+            const userRef = doc(db, 'users', globalUser.uid); // for reading the database  
+            const res = await setDoc(userRef, {
+                [timestamp]: newData
+            }, { merge: true })
+
+            setSelectedCoffee(null)
+            setHour(0)
+            setMin(0)
+            setCoffeeCost(0)
+
+
+        }catch (err){
+            console.log(err.message)
         }
 
-        const nowTime = Date.now()
-        const timeToSubtract =  (hour * 60 * 60 * 1000) + (min * 60 * 100)
-        const timestamp = nowTime - timeToSubtract
-        newGlobalData[timestamp] = {}
-
-        // update the global state 
-
-        // persista the data in the firebase firestore 
-
-        console.log(selectedCoffee , coffeeCost, hour, min )
+        
     }
 
     function handleCloseModal() {
